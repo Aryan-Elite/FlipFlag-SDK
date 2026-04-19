@@ -1,6 +1,6 @@
 {
   "name": "@getflipflag/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JavaScript SDK for FlipFlag — evaluate feature flags in your frontend app",
   "main": "src/index.js",
   "types": "types/index.d.ts",

@@ -3,6 +3,8 @@ const flipflag = {
   _config: null,
   _userContext: null,
   _ready: false,
+  _pollTimer: null,
+  _listeners: [],
 
   async init(config = {}) {
     if (!config.sdkKey) throw new Error("FlipFlag: sdkKey is required")
@@ -38,6 +40,7 @@ const flipflag = {
       const data = await res.json()
       this._flags = data.flags ?? {}
       this._ready = true
+      this._notify()
     } catch (err) {
       this._ready = false
       if (this._config?.onError) this._config.onError(err)
@@ -66,6 +69,27 @@ const flipflag = {
 
   async refresh() {
     await this._fetch()
+  },
+
+  onChange(cb) {
+    this._listeners.push(cb)
+    return () => { this._listeners = this._listeners.filter(fn => fn !== cb) }
+  },
+
+  _notify() {
+    this._listeners.forEach(cb => cb(this.allFlags()))
+  },
+
+  startPolling(interval = 30000) {
+    this.stopPolling()
+    this._pollTimer = setInterval(() => this._fetch(), interval)
+  },
+
+  stopPolling() {
+    if (this._pollTimer) {
+      clearInterval(this._pollTimer)
+      this._pollTimer = null
+    }
   },
 }
 

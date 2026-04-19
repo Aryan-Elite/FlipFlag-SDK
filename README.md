@@ -20,7 +20,7 @@ import flipflag from "@getflipflag/sdk"
 // 1. Initialize once at app startup (fetches all flags from FlipFlag backend)
 await flipflag.init({
   sdkKey: "ff_dev_xxxxxxxx",  // get this from FlipFlag dashboard → Settings → Developer
-  baseURL: "https://your-flipflag-backend.com",
+  baseURL: "https://flipflag.onrender.com",
 })
 
 // 2. Check flags anywhere in your app (instant, no network call)
@@ -38,7 +38,7 @@ Pass a user context to evaluate flags per user — useful for targeting specific
 ```js
 await flipflag.init({
   sdkKey: "ff_dev_xxxxxxxx",
-  baseURL: "https://your-flipflag-backend.com",
+  baseURL: "https://flipflag.onrender.com",
   userContext: {
     userId: "user-123",               // used for percentage rollouts
     attributes: { plan: "premium" },  // used for rule-based targeting
@@ -146,6 +146,60 @@ Re-fetch flags from the backend without changing the user context.
 
 ```js
 await flipflag.refresh()
+```
+
+---
+
+### `flipflag.startPolling(interval?)` → `void`
+
+Auto-refresh flags every N milliseconds. Flags update in the background — no page refresh needed.
+
+```js
+flipflag.startPolling(5000)   // re-fetch every 5 seconds
+flipflag.startPolling(30000)  // re-fetch every 30 seconds (default)
+```
+
+---
+
+### `flipflag.stopPolling()` → `void`
+
+Stop the auto-refresh.
+
+```js
+flipflag.stopPolling()
+```
+
+---
+
+### `flipflag.onChange(cb)` → `() => void`
+
+Register a callback that fires whenever flags are updated (after every successful fetch or poll). Returns an unsubscribe function.
+
+```js
+const unsub = flipflag.onChange((flags) => {
+  console.log("Flags updated:", flags)
+})
+
+// Later, to stop listening:
+unsub()
+```
+
+**React example** — re-render automatically when flags change:
+
+```js
+useEffect(() => {
+  flipflag.init({ sdkKey: "...", baseURL: "..." }).then(() => {
+    setFlags(flipflag.allFlags())
+    flipflag.startPolling(5000)
+  })
+
+  const unsub = flipflag.onChange((updatedFlags) => setFlags({ ...updatedFlags }))
+
+  return () => {
+    unsub()
+    flipflag.stopPolling()
+  }
+}, [])
 ```
 
 ## How It Works

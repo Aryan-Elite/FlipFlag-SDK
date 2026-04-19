@@ -18,6 +18,9 @@ export interface FlipFlagClient {
   isReady(): boolean
   identify(userContext: UserContext): Promise<void>
   refresh(): Promise<void>
+  onChange(cb: (flags: Record<string, boolean>) => void): () => void
+  startPolling(interval?: number): void
+  stopPolling(): void
 }
 
 declare const flipflag: FlipFlagClient
