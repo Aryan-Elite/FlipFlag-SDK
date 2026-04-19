@@ -1,0 +1,27 @@
+{
+  "name": "@getflipflag/sdk",
+  "version": "0.1.1",
+  "description": "JavaScript SDK for FlipFlag — evaluate feature flags in your frontend app",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "type": "module",
+  "files": [
+    "src",
+    "types"
+  ],
+  "keywords": [
+    "feature-flags",
+    "feature-toggles",
+    "flipflag",
+    "sdk",
+    "ab-testing",
+    "canary-release",
+    "progressive-rollout"
+  ],
+  "author": "Aryan Gupta",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Aryan-Elite/FlipFlag-SDK"
+  }
+}
